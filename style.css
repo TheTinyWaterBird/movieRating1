@@ -1,0 +1,17 @@
+#star1, #star2, #star3, #star4, #star5 {
+    display: inline-block;
+    cursor: pointer;
+}
+
+#ratingButton {
+    background-color: #ffffff;
+    color: white;
+    padding: 0px 0px;
+    border: none;
+    cursor: pointer;
+}
+
+p {
+    font-size: 30px;
+    color: black;
+}
