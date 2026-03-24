@@ -6,93 +6,69 @@ const ratingElement = [
     document.getElementById("star5")
 ];
 
+const movieListElement = document.getElementById("movieList");
 let rating = 0;
-let originalElement = null;
-let movie = null;
-let arrRatings = [];
-let starRating = null;
-const getMovieInfo = {
-    title: document.getElementById("title"),
-    year: document.getElementById("year"),
-    genre: document.getElementById("genre")
-};
 
-localStorage.setItem("movieList", JSON.stringify(getMovieInfo));
-
-const ratings = [
-    function rateMovie1(event) {
-        if (event.isTrusted) {
-            rating = 1;
-
-            for (let i = 0; i < rating; i++)
-                ratingElement[i].querySelector("p").textContent = "⭐";
-
-            return rating;
-        }
-        else
-            return rating;
-    },
-
-    function rateMovie2(event) {
-        if (event.isTrusted) {
-            rating = 2;
-
-            for (let i = 0; i < rating; i++)
-                ratingElement[i].querySelector("p").textContent = "⭐";
-
-            return rating;
-        }
-        else
-            return rating;
-    },
-
-    function rateMovie3(event) {
-        if (event.isTrusted) {
-            rating = 3;
-
-            for (let i = 0; i < rating; i++)
-                ratingElement[i].querySelector("p").textContent = "⭐";
-
-            return rating;
-        }
-        else
-            return rating;
-    },
-
-    function rateMovie4(event) {
-        if (event.isTrusted) {
-            rating = 4;
-
-            for (let i = 0; i < rating; i++)
-                ratingElement[i].querySelector("p").textContent = "⭐";
-
-            return rating;
-        }
-        else
-            return rating;
-    },
-
-    function rateMovie5(event) {
-        if (event.isTrusted) {
-            rating = 5;
-
-            for (let i = 0; i < rating; i++)
-                ratingElement[i].querySelector("p").textContent = "⭐";
-
-            return rating;
-        }
-        else
-            return rating;
-    }
-];
-
-for (x = 0; x < 5; x++) {
-    arrRatings[x] = ratings[x];
-}
-
-for (b = 0; b < 5; b++) {
-    if (arrRatings[b] > 0) {
-        starRating = arrRatings[b];
-        break;
+function updateStars() {
+    for (let i = 0; i < 5; i++) {
+        ratingElement[i].querySelector("p").textContent = i < rating ? "⭐" : "✩";
     }
 }
+
+function setRating(value) {
+    rating = value;
+    updateStars();
+}
+
+function rateMovie1() { setRating(1); }
+function rateMovie2() { setRating(2); }
+function rateMovie3() { setRating(3); }
+function rateMovie4() { setRating(4); }
+function rateMovie5() { setRating(5); }
+
+function addMovieToList(movie) {
+    const movieEntry = document.createElement("div");
+    movieEntry.className = "movie-entry";
+    const stars = '⭐'.repeat(movie.rating) + '✩'.repeat(5 - movie.rating);
+    movieEntry.textContent = `${movie.title} (${movie.year}) - ${stars}`;
+    movieListElement.appendChild(movieEntry);
+}
+
+function renderMovieList() {
+    movieListElement.innerHTML = "";
+    const movies = JSON.parse(localStorage.getItem("movies")) || [];
+    movies.forEach(addMovieToList);
+}
+
+function savePrint(event) {
+    event.preventDefault();
+    const title = document.getElementById("title").value.trim();
+    const year = document.getElementById("year").value;
+    const genre = document.getElementById("genre").value;
+    if (!title || !year || !genre || rating === 0) {
+        alert("Please fill all fields and select a rating.");
+        return;
+    }
+    const movie = {
+        title: title,
+        year: parseInt(year),
+        genre: genre,
+        rating: rating
+    };
+    const movies = JSON.parse(localStorage.getItem("movies")) || [];
+    movies.push(movie);
+    localStorage.setItem("movies", JSON.stringify(movies));
+    addMovieToList(movie);
+    alert("Movie rated and saved!");
+
+    document.getElementById("title").value = "";
+    document.getElementById("year").value = "";
+    document.getElementById("genre").value = "action";
+    rating = 0;
+    updateStars();
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+    updateStars();
+    renderMovieList();
+});
